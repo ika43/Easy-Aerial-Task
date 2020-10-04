@@ -57,7 +57,7 @@ function printSolution(src, dist, parents, founded) {
         {
             printPath(i, parents);
             console.log(src + " -> " + i + "\tdistance: " + dist[i] + "\tpath: " + path);
-            path.splice(0, path.length); // clear paths for new spot
+            path.splice(0, path.length); // clear path array
         }
     }
 }
