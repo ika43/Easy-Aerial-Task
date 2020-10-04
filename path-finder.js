@@ -1,6 +1,6 @@
-const graph = require('./matrix');
+const { graph } = require('./matrix');
 
-function minDistance(dist, sptSet, V) {
+const minDistance = (dist, sptSet, V) => {
     let min = Number.MAX_VALUE;
     let minIndex = 0;
 
@@ -15,8 +15,8 @@ function minDistance(dist, sptSet, V) {
     return minIndex;
 }
 
-function dijsktra(graph, src, home, safe) {
-    safe.push(home); // put all safe vertices in one array
+const findSafeNodes = (graph, dron, homePosition, safePostitions) => {
+    safePostitions.push(homePosition); // put all safe position in one array
     const V = graph.length;
     const dist = [];
     const sptSet = [];
@@ -28,10 +28,10 @@ function dijsktra(graph, src, home, safe) {
         dist[i] = Number.MAX_VALUE;
         sptSet[i] = false;
     }
-    dist[src] = 0;
-    parents[src] = -1;
-    // Find shortest path for given vertices
-    for (let count = 0; count < V - 1 ; ++count) 
+    dist[dron] = 0;
+    parents[dron] = -1;
+    // Find shortest path for given node
+    for (let j = 0; j < V - 1 ; ++j) 
     {
         let u = minDistance(dist, sptSet, V);
         sptSet[u] = true;
@@ -44,29 +44,30 @@ function dijsktra(graph, src, home, safe) {
                     parents[v]  = u;
                 }
         }
-        if (safe.includes(u)) founded.push(u);
-        if (founded.length === safe.length) break; // If all safe vertices are found exit loop
+        if (safePostitions.includes(u)) founded.push(u);
+        if (founded.length === safePostitions.length) break; // If all safe nodes are found exit loop
     }
-    printSolution(src, dist, parents, founded);
+    printSolution(dron, dist, parents, founded);
 }
 
-function printSolution(src, dist, parents, founded) {
+const printSolution = (dron, dist, parents, founded) => {
     const nVertices = dist.length;
     for (let i = 0; i < nVertices; i++) {
-        if(i != src && dist[i] != Number.MAX_VALUE && founded.includes(i))
+        if(i != dron && dist[i] != Number.MAX_VALUE && founded.includes(i))
         {
             printPath(i, parents);
-            console.log(src + " -> " + i + "\tdistance: " + dist[i] + "\tpath: " + path);
+            console.log(dron + " -> " + i + "\tdistance: " + dist[i] + "\tpath: " + path);
             path.splice(0, path.length); // clear path array
         }
     }
 }
 
 const path = [];
-function printPath (currentVertex, parents) {
-    if(currentVertex === -1) return;
-    printPath(parents[currentVertex], parents);
-    path.push(currentVertex);
+const printPath = (currNode, parents) => {
+    if(currNode === -1) return;
+    printPath(parents[currNode], parents);
+    path.push(currNode);
 }
 
-dijsktra(graph, 12, 15, [22]);
+// values of dron and safe positions can be changed
+findSafeNodes(graph, 12, 15, [22]);
